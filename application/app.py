@@ -1,27 +1,37 @@
 from flask import Flask, request, jsonify
 import os
-from psycopg2.pool import SimpleConnectionPool
+import psycopg2
 from psycopg2.extras import RealDictCursor
+from dotenv import load_dotenv
 
-# REQUIRED env vars (must be set by IaC/user-data/SSM). If missing, crash.
-DB_HOST = os.environ["DB_HOST"]
+# Load .env values
+load_dotenv()
+
+# Required environment variables
+required_vars = ["DB_HOST", "DB_NAME", "DB_USER", "DB_PASSWORD"]
+missing = [var for var in required_vars if not os.environ.get(var)]
+
+if missing:
+    raise RuntimeError(f"❌ Missing required environment variables: {', '.join(missing)}")
+
+# Load env vars
+DB_HOST = os.environ.get("DB_HOST")
 DB_PORT = int(os.environ.get("DB_PORT", "5432"))
-DB_NAME = os.environ["DB_NAME"]
-DB_USER = os.environ["DB_USER"]
-DB_PASSWORD = os.environ["DB_PASSWORD"]
+DB_NAME = os.environ.get("DB_NAME")
+DB_USER = os.environ.get("DB_USER")
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
 
-# Create a tiny connection pool at startup. If it fails, app fails (good).
-pool = SimpleConnectionPool(
-    minconn=1,
-    maxconn=5,
-    host=DB_HOST,
-    port=DB_PORT,
-    dbname=DB_NAME,
-    user=DB_USER,
-    password=DB_PASSWORD,
-    connect_timeout=5,
-    sslmode="require",  # RDS TLS
-)
+# DB connection helper
+def get_db_connection():
+    return psycopg2.connect(
+        host=DB_HOST,
+        port=DB_PORT,
+        dbname=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        connect_timeout=5,
+        # sslmode="require"
+    )
 
 app = Flask(__name__)
 
@@ -31,24 +41,28 @@ def health():
 
 @app.route("/db/health", methods=["GET"])
 def db_health():
-    conn = pool.getconn()
+    conn = get_db_connection()
     try:
         with conn.cursor() as cur:
             cur.execute("SELECT 1;")
             cur.fetchone()
         return jsonify(db="ok"), 200
+    except Exception as e:
+        return jsonify(error=str(e)), 500
     finally:
-        pool.putconn(conn)
+        conn.close()
 
 @app.route("/items", methods=["GET"])
 def list_items():
-    conn = pool.getconn()
+    conn = get_db_connection()
     try:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute("SELECT id, name, created_at FROM items ORDER BY id;")
             return jsonify(items=cur.fetchall()), 200
+    except Exception as e:
+        return jsonify(error=str(e)), 500
     finally:
-        pool.putconn(conn)
+        conn.close()
 
 @app.route("/items", methods=["POST"])
 def create_item():
@@ -57,7 +71,7 @@ def create_item():
     if not name:
         return jsonify(error="name is required"), 400
 
-    conn = pool.getconn()
+    conn = get_db_connection()
     try:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(
@@ -67,12 +81,14 @@ def create_item():
             row = cur.fetchone()
             conn.commit()
             return jsonify(row), 201
+    except Exception as e:
+        return jsonify(error=str(e)), 500
     finally:
-        pool.putconn(conn)
+        conn.close()
 
 @app.route("/items/<int:item_id>", methods=["GET"])
 def get_item(item_id):
-    conn = pool.getconn()
+    conn = get_db_connection()
     try:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute("SELECT id, name, created_at FROM items WHERE id=%s;", (item_id,))
@@ -80,21 +96,25 @@ def get_item(item_id):
             if not row:
                 return jsonify(error="not found"), 404
             return jsonify(row), 200
+    except Exception as e:
+        return jsonify(error=str(e)), 500
     finally:
-        pool.putconn(conn)
+        conn.close()
 
 @app.route("/items/<int:item_id>", methods=["DELETE"])
 def delete_item(item_id):
-    conn = pool.getconn()
+    conn = get_db_connection()
     try:
         with conn.cursor() as cur:
             cur.execute("DELETE FROM items WHERE id=%s;", (item_id,))
             deleted = cur.rowcount
             conn.commit()
             return jsonify(deleted=deleted), 200
+    except Exception as e:
+        return jsonify(error=str(e)), 500
     finally:
-        pool.putconn(conn)
+        conn.close()
 
 if __name__ == "__main__":
-    # local dev only; in EC2 use gunicorn
-    app.run(host="0.0.0.0", port=5001)
+    # Local dev only; use gunicorn in production
+    app.run(host="0.0.0.0", port=5002)
