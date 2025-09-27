@@ -6,3 +6,40 @@ module "network" {
   public_subnet_cidrs  = var.public_subnet_cidrs
   private_subnet_cidrs = var.private_subnet_cidrs
 }
+
+# Internet Gateway
+resource "aws_internet_gateway" "this" {
+  vpc_id = module.network.vpc_id
+  tags   = { Name = "${var.project}-igw" }
+}
+
+resource "aws_eip" "nat" {
+  count  = length(module.network.public_subnet_ids)
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "this" {
+  count         = length(module.network.public_subnet_ids)
+  allocation_id = aws_eip.nat[count.index].id
+  subnet_id     = module.network.public_subnet_ids[count.index]
+  tags = {
+    Name = "${var.project}-nat-${count.index + 1}"
+  }
+}
+
+# Route for public subnets → IGW
+resource "aws_route" "public_internet_access" {
+  route_table_id         = module.network.public_rt_id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.this.id
+}
+
+# Route for private subnets → NAT
+resource "aws_route" "private_internet_access" {
+  count                  = length(module.network.private_rt_ids)
+  route_table_id         = module.network.private_rt_ids[count.index]
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.this[count.index].id
+}
+
+
