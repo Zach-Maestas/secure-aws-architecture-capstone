@@ -13,11 +13,13 @@ resource "aws_internet_gateway" "this" {
   tags   = { Name = "${var.project}-igw" }
 }
 
+# Elastic IPs for NAT Gateways
 resource "aws_eip" "nat" {
   count  = length(module.network.public_subnet_ids)
   domain = "vpc"
 }
 
+# NAT Gateway
 resource "aws_nat_gateway" "this" {
   count         = length(module.network.public_subnet_ids)
   allocation_id = aws_eip.nat[count.index].id
@@ -40,6 +42,19 @@ resource "aws_route" "private_internet_access" {
   route_table_id         = module.network.private_rt_ids[count.index]
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.this[count.index].id
+}
+
+# S3 VPC Endpoint
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id            = module.network.vpc_id
+  service_name      = "com.amazonaws.${var.region}.s3"
+  vpc_endpoint_type = "Gateway"
+
+  route_table_ids = module.network.private_rt_ids # Attach to all private route tables across AZs
+
+  tags = {
+    Name = "${var.project}-s3-endpoint"
+  }
 }
 
 
