@@ -11,7 +11,7 @@ resource "aws_lb" "this" {
   }
 }
 
-# ALB Listener
+# ALB HTTP Listener
 resource "aws_lb_listener" "http" {
     load_balancer_arn = aws_lb.this.arn
     port              = "80"
@@ -27,12 +27,13 @@ resource "aws_lb_listener" "http" {
     }
 }
 
+# ALB HTTPS Listener
 resource "aws_lb_listener" "https" {
     load_balancer_arn = aws_lb.this.arn
     port              = "443"
     protocol          = "HTTPS"
     ssl_policy        = "ELBSecurityPolicy-2021-06"
-    certificate_arn   = var.acm_certificate_arn
+    certificate_arn = var.certificate_arn
 
     default_action {
       type             = "forward"
