@@ -1,6 +1,7 @@
 variable "project" {
   description = "Project name"
   type        = string
+  default     = "secure-capstone"
 }
 
 variable "vpc_cidr" {
@@ -11,7 +12,7 @@ variable "vpc_cidr" {
 variable "region" {
   description = "AWS region to deploy into"
   type        = string
-  default     = "us-west-2"
+  default     = "us-east-1"
 }
 
 variable "public_subnet_cidrs" {
