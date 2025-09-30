@@ -27,5 +27,14 @@ variable "private_subnet_cidrs" {
 variable "azs" {
   description = "List of availability zones"
   type        = list(string)
-  default     = ["us-west-2a", "us-west-2b"]
+}
+
+variable "acm_domain_name" {
+  description = "The domain name for the ACM certificate (e.g. api.example.com)"
+  type        = string
+}
+
+variable "route53_zone_id" {
+  description = "The Route 53 Hosted Zone ID to use for ACM DNS validation"
+  type        = string
 }

@@ -57,4 +57,25 @@ resource "aws_vpc_endpoint" "s3" {
   }
 }
 
+# ACM Certificate
+module "acm" {
+  source         = "./modules/acm"
+  domain_name    = var.acm_domain_name       
+  hosted_zone_id = var.route53_zone_id    
+  project        = var.project
+}
+
+
+# Application Module
+module "app" {
+  source             = "./modules/app"
+  project            = var.project
+  vpc_id             = module.network.vpc_id
+  public_subnet_ids  = module.network.public_subnet_ids
+  private_subnet_ids = module.network.private_subnet_ids
+  certificate_arn    = module.acm.certificate_arn
+}
+
+
+
 
