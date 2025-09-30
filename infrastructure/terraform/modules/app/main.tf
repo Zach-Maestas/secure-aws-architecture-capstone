@@ -3,7 +3,7 @@ resource "aws_lb" "this" {
   name               = "${var.project}-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [module.security_group.alb_sg_id]
+  # security_groups    = [module.security_group.alb_sg_id] TODO: Add security group module
   subnets            = var.public_subnet_ids
 
   tags = {
@@ -37,6 +37,6 @@ resource "aws_lb_listener" "https" {
 
     default_action {
       type             = "forward"
-      target_group_arn = aws_lb_target_group.app.arn
+      target_group_arn = aws_lb_target_group.app.arn 
     }
 }

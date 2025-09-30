@@ -60,9 +60,9 @@ resource "aws_vpc_endpoint" "s3" {
 # ACM Certificate
 module "acm" {
   source         = "./modules/acm"
+  project        = var.project
   domain_name    = var.acm_domain_name       
   hosted_zone_id = var.route53_zone_id    
-  project        = var.project
 }
 
 
