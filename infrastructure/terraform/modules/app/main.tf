@@ -3,7 +3,7 @@ resource "aws_lb" "this" {
   name               = "${var.project}-alb"
   internal           = false
   load_balancer_type = "application"
-  # security_groups    = [module.security_group.alb_sg_id] TODO: Add security group module
+  security_groups    = [aws_security_group.alb.id]
   subnets            = var.public_subnet_ids
 
   tags = {
