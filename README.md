@@ -1,6 +1,6 @@
 # Secure AWS Architecture Capstone
 
-
+![Architecture Diagram](./assets/architecture.png)
 
 > ⚠️ **Status**: _In Progress_  
 > This project is actively being built and iterated on as part of a portfolio-quality infrastructure architecture. Expect changes and additions over time.
