@@ -49,6 +49,7 @@ resource "aws_lb_target_group" "app" {
   vpc_id      = var.vpc_id
   target_type = "instance"
   health_check {
+    
     path                = "/"
     interval            = 30
     timeout             = 5
@@ -64,7 +65,7 @@ resource "aws_lb_target_group" "app" {
 # EC2 Instance
 resource "aws_instance" "app" {
   count         = length(var.private_subnet_ids)
-  ami           = data.aws_ami.ubuntu.id
+  ami           = data.aws_ami.amazon_linux_2.id
   instance_type = "t3.micro"
   subnet_id     = element(var.private_subnet_ids, count.index)
   security_groups = [aws_security_group.ec2.id]
@@ -85,4 +86,12 @@ resource "aws_instance" "app" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+# Register EC2 Instances with Target Group
+resource "aws_lb_target_group_attachment" "app" {
+  count            = length(aws_instance.app[*].id)
+  target_group_arn = aws_lb_target_group.app.arn
+  target_id        = aws_instance.app[count.index].id
+  port             = 80
 }
