@@ -60,7 +60,6 @@ resource "aws_route_table" "private" {
   }
 }
 
-
 # Associate Private Subnets with Private Route Table
 resource "aws_route_table_association" "private_subnets" {
   count          = length(aws_subnet.private[*].id)
