@@ -34,3 +34,17 @@ resource "aws_acm_certificate_validation" "this" {
   certificate_arn         = aws_acm_certificate.this.arn
   validation_record_fqdns = [for record in aws_route53_record.validation : record.fqdn]
 }
+
+# Create Route 53 A record for the API pointing to the ALB
+resource "aws_route53_record" "api_record" {
+  zone_id = var.hosted_zone_id
+  name    = var.domain_name
+  type    = "A"
+
+  alias {
+    name                   = var.alb_dns_name
+    zone_id                = data.aws_elb_hosted_zone_id.current.id
+    evaluate_target_health = true
+  }
+}
+

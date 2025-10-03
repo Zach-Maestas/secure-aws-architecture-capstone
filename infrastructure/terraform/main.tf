@@ -61,10 +61,11 @@ resource "aws_vpc_endpoint" "s3" {
 module "acm" {
   source         = "./modules/acm"
   project        = var.project
-  domain_name    = var.acm_domain_name       
+  domain_name    = var.domain_name
   hosted_zone_id = var.route53_zone_id    
-}
 
+  alb_dns_name = module.app.alb_dns_name
+}
 
 # Application Module
 module "app" {
