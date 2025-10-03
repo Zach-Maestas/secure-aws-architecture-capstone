@@ -30,7 +30,7 @@ variable "azs" {
   type        = list(string)
 }
 
-variable "acm_domain_name" {
+variable "domain_name" {
   description = "The domain name for the ACM certificate (e.g. api.example.com)"
   type        = string
 }
@@ -38,4 +38,4 @@ variable "acm_domain_name" {
 variable "route53_zone_id" {
   description = "The Route 53 Hosted Zone ID to use for ACM DNS validation"
   type        = string
-}
+} 
