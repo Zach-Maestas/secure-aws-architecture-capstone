@@ -79,40 +79,41 @@ resource "aws_instance" "app" {
     Name = "${var.project}-app-${count.index + 1}"
   }
 
-user_data = <<-EOF
-              #!/bin/bash
-              yum update -y
-              yum install -y python3 git
-              pip3 install flask psycopg2-binary python-dotenv
+  user_data = <<-EOF
+                #!/bin/bash
+                set -e
 
-              cd /home/ec2-user
-              git clone https://github.com/Zach-Maestas/secure-aws-architecture-capstone.git app || \
-              (cd app && git pull)
+                # Update & install deps
+                yum update -y
+                yum install -y python3 git
+                pip3 install flask psycopg2-binary python-dotenv
 
-              # Create systemd service for Flask
-              sudo tee /etc/systemd/system/flask-app.service > /dev/null <<EOL
-              [Unit]
-              Description=Flask Application
-              After=network.target
+                # Pull app repo
+                cd /home/ec2-user
+                git clone https://github.com/Zach-Maestas/secure-aws-architecture-capstone.git app || \
+                (cd app && git pull)
 
-              [Service]
-              User=ec2-user
-              WorkingDirectory=/home/ec2-user/app/application
-              ExecStart=/usr/bin/python3 app.py
-              Restart=always
-              Environment="DB_HOST=${DB_HOST}"
-              Environment="DB_NAME=${DB_NAME}"
-              Environment="DB_USER=${DB_USER}"
-              Environment="DB_PASSWORD=${DB_PASSWORD}"
+                # Create systemd service for Flask (no DB env vars yet)
+                sudo tee /etc/systemd/system/flask-app.service > /dev/null <<EOL
+                [Unit]
+                Description=Flask Application
+                After=network.target
 
-              [Install]
-              WantedBy=multi-user.target
-              EOL
+                [Service]
+                User=ec2-user
+                WorkingDirectory=/home/ec2-user/app/application
+                ExecStart=/usr/bin/python3 app.py
+                Restart=always
 
-              sudo systemctl daemon-reload
-              sudo systemctl enable flask-app
-              sudo systemctl start flask-app
-              EOF
+                [Install]
+                WantedBy=multi-user.target
+                EOL
+
+                # Enable & start the service
+                sudo systemctl daemon-reload
+                sudo systemctl enable flask-app
+                sudo systemctl start flask-app
+                EOF
 
   lifecycle {
     create_before_destroy = true
