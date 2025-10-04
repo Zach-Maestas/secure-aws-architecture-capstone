@@ -12,7 +12,7 @@ required_vars = ["DB_HOST", "DB_NAME", "DB_USER", "DB_PASSWORD"]
 missing = [var for var in required_vars if not os.environ.get(var)]
 
 if missing:
-    raise RuntimeError(f"❌ Missing required environment variables: {', '.join(missing)}")
+    print(f"⚠️ Missing DB env vars: {', '.join(missing)}. DB routes may fail.")
 
 # Load env vars
 DB_HOST = os.environ.get("DB_HOST")
@@ -116,5 +116,4 @@ def delete_item(item_id):
         conn.close()
 
 if __name__ == "__main__":
-    # Local dev only; use gunicorn in production
-    app.run(host="0.0.0.0", port=5002)
+    app.run(host="0.0.0.0", port=5000)
