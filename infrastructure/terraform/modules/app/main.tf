@@ -79,26 +79,40 @@ resource "aws_instance" "app" {
     Name = "${var.project}-app-${count.index + 1}"
   }
 
-  user_data = <<-EOF
-                #!/bin/bash
-                # Update packages
-                yum update -y
+user_data = <<-EOF
+              #!/bin/bash
+              yum update -y
+              yum install -y python3 git
+              pip3 install flask psycopg2-binary python-dotenv
 
-                # Install Python 3 and pip
-                yum install -y python3 git
+              cd /home/ec2-user
+              git clone https://github.com/Zach-Maestas/secure-aws-architecture-capstone.git app || \
+              (cd app && git pull)
 
-                # Install Flask app dependencies
-                pip3 install flask
+              # Create systemd service for Flask
+              sudo tee /etc/systemd/system/flask-app.service > /dev/null <<EOL
+              [Unit]
+              Description=Flask Application
+              After=network.target
 
-                # Clone your app repo (or copy from S3 if you upload it)
-                cd /home/ec2-user
-                git clone https://github.com/Zach-Maestas/secure-aws-architecture-capstone.git app
-                cd app/application
-                pip3 install -r requirements.txt
+              [Service]
+              User=ec2-user
+              WorkingDirectory=/home/ec2-user/app/application
+              ExecStart=/usr/bin/python3 app.py
+              Restart=always
+              Environment="DB_HOST=${DB_HOST}"
+              Environment="DB_NAME=${DB_NAME}"
+              Environment="DB_USER=${DB_USER}"
+              Environment="DB_PASSWORD=${DB_PASSWORD}"
 
-                # Run Flask app on 0.0.0.0:5000
-                nohup python3 app.py > app.log 2>&1 &
-                EOF
+              [Install]
+              WantedBy=multi-user.target
+              EOL
+
+              sudo systemctl daemon-reload
+              sudo systemctl enable flask-app
+              sudo systemctl start flask-app
+              EOF
 
   lifecycle {
     create_before_destroy = true
