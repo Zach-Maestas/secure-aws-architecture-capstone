@@ -76,7 +76,6 @@ module "app" {
   public_subnet_ids  = module.network.public_subnet_ids
   private_subnet_ids = module.network.private_app_subnet_ids
   certificate_arn    = module.acm.certificate_arn
-  target_group_arn   = module.app.target_group_arn
 }
 
 
