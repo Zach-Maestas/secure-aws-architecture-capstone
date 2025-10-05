@@ -65,67 +65,49 @@ resource "aws_lb_target_group" "app" {
   }
 }
 
-# EC2 Instance
-resource "aws_instance" "app" {
-  count         = length(var.private_subnet_ids)
-  ami           = data.aws_ami.amazon_linux_2.id
+# Launch Template
+resource "aws_launch_template" "this" {
+  name_prefix   = "${var.project}-lt-"
+  image_id      = data.aws_ami.amazon_linux_2.id
   instance_type = "t3.micro"
-  subnet_id     = element(var.private_subnet_ids, count.index)
-  security_groups = [aws_security_group.ec2.id]
+  vpc_security_group_ids = [aws_security_group.ec2.id]
 
-  iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
-
-  tags = {
-    Name = "${var.project}-app-${count.index + 1}"
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ssm_profile.name
   }
 
-  user_data = <<-EOF
-                #!/bin/bash
-                set -e
+  user_data = base64encode(file("${path.root}/../scripts/user_data.sh"))
 
-                # Update & install deps
-                yum update -y
-                yum install -y python3 git
-                pip3 install flask psycopg2-binary python-dotenv
+  tag_specifications {
+    resource_type = "instance"
 
-                # Pull app repo
-                cd /home/ec2-user
-                git clone https://github.com/Zach-Maestas/secure-aws-architecture-capstone.git app || \
-                (cd app && git pull)
-
-                # Create systemd service for Flask (no DB env vars yet)
-                sudo tee /etc/systemd/system/flask-app.service > /dev/null <<EOL
-                [Unit]
-                Description=Flask Application
-                After=network.target
-
-                [Service]
-                User=ec2-user
-                WorkingDirectory=/home/ec2-user/app/application
-                ExecStart=/usr/bin/python3 app.py
-                Restart=always
-
-                [Install]
-                WantedBy=multi-user.target
-                EOL
-
-                # Enable & start the service
-                sudo systemctl daemon-reload
-                sudo systemctl enable flask-app
-                sudo systemctl start flask-app
-                EOF
-
-  lifecycle {
-    create_before_destroy = true
+    tags = {
+      Name = "${var.project}-app"
+    }
   }
 }
 
-# Register EC2 Instances with Target Group
-resource "aws_lb_target_group_attachment" "app" {
-  count            = length(aws_instance.app[*].id)
-  target_group_arn = aws_lb_target_group.app.arn
-  target_id        = aws_instance.app[count.index].id
-  port             = 5000
+
+# Auto Scaling Group (how many, where, and scaling)
+resource "aws_autoscaling_group" "app" {
+  name                 = "${var.project}-asg"
+  vpc_zone_identifier  = var.private_subnet_ids
+  desired_capacity     = 2
+  min_size             = 1
+  max_size             = 4
+  health_check_type    = "EC2"
+  target_group_arns    = [var.target_group_arn]
+
+  launch_template {
+    id      = aws_launch_template.this.id
+    version = "$Latest"
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "${var.project}-asg"
+    propagate_at_launch = true
+  }
 }
 
 # IAM Role for SSM

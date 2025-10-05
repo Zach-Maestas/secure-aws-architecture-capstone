@@ -14,7 +14,7 @@ resource "aws_subnet" "public" {
   count                   = length(var.public_subnet_cidrs)
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_cidrs[count.index]
-  availability_zone       = var.azs[count.index % length(var.azs)]
+  availability_zone       = var.azs[count.index]
   map_public_ip_on_launch = true
 
   tags = {
@@ -22,17 +22,33 @@ resource "aws_subnet" "public" {
   }
 }
 
-# Private Subnets
-resource "aws_subnet" "private" {
-  count             = length(var.private_subnet_cidrs)
+# Application Subnets (Private)
+resource "aws_subnet" "private_app" {
+  count             = length(var.azs)
   vpc_id            = aws_vpc.main.id
-  cidr_block        = var.private_subnet_cidrs[count.index]
-  availability_zone = var.azs[count.index % length(var.azs)]
+  cidr_block        = var.private_app_subnet_cidrs[count.index]
+  availability_zone = var.azs[count.index]
 
   tags = {
-    Name = "${var.project}-private-${var.azs[count.index]}"
+    Name = "${var.project}-private-app-${var.azs[count.index]}"
+    Tier = "App"
   }
 }
+
+# Database Subnets (Private)
+resource "aws_subnet" "private_db" {
+  count             = length(var.azs)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.private_db_subnet_cidrs[count.index]
+  availability_zone = var.azs[count.index]
+
+  tags = {
+    Name = "${var.project}-private-db-${var.azs[count.index]}"
+    Tier = "DB"
+  }
+}
+
+# --- ROUTE TABLES ---
 
 # Public Route Table
 resource "aws_route_table" "public" {
@@ -50,9 +66,10 @@ resource "aws_route_table_association" "public_subnets" {
   route_table_id = aws_route_table.public.id
 }
 
-# Private Route Tables
+# Private Route Tables (for private_app and private_db)
+# You’ll have one per AZ; both App and DB subnets in that AZ can share it if desired
 resource "aws_route_table" "private" {
-  count  = length(var.private_subnet_cidrs)
+  count  = length(var.azs)
   vpc_id = aws_vpc.main.id
 
   tags = {
@@ -60,9 +77,16 @@ resource "aws_route_table" "private" {
   }
 }
 
-# Associate Private Subnets with Private Route Table
-resource "aws_route_table_association" "private_subnets" {
-  count          = length(aws_subnet.private[*].id)
-  subnet_id      = aws_subnet.private[count.index].id
+# Associate Application Subnets with Private Route Tables
+resource "aws_route_table_association" "private_app_subnets" {
+  count          = length(var.azs)
+  subnet_id      = aws_subnet.private_app[count.index].id
+  route_table_id = aws_route_table.private[count.index].id
+}
+
+# Associate Database Subnets with Private Route Tables
+resource "aws_route_table_association" "private_db_subnets" {
+  count          = length(var.azs)
+  subnet_id      = aws_subnet.private_db[count.index].id
   route_table_id = aws_route_table.private[count.index].id
 }
