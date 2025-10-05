@@ -22,3 +22,8 @@ variable "certificate_arn" {
   description = "The ARN of the ACM certificate to use with the ALB"
   type        = string
 }
+
+variable "target_group_arn" {
+  description = "ARN of the ALB target group to register the ASG with"
+  type        = string
+}

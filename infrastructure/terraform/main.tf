@@ -4,7 +4,8 @@ module "network" {
   vpc_cidr             = var.vpc_cidr
   azs                  = var.azs
   public_subnet_cidrs  = var.public_subnet_cidrs
-  private_subnet_cidrs = var.private_subnet_cidrs
+  private_app_subnet_cidrs = var.private_app_subnet_cidrs
+  private_db_subnet_cidrs  = var.private_db_subnet_cidrs
 }
 
 # Internet Gateway
@@ -73,8 +74,9 @@ module "app" {
   project            = var.project
   vpc_id             = module.network.vpc_id
   public_subnet_ids  = module.network.public_subnet_ids
-  private_subnet_ids = module.network.private_subnet_ids
+  private_subnet_ids = module.network.private_app_subnet_ids
   certificate_arn    = module.acm.certificate_arn
+  target_group_arn   = module.app.target_group_arn
 }
 
 

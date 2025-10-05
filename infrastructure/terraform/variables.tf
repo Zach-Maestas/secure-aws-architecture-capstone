@@ -20,11 +20,6 @@ variable "public_subnet_cidrs" {
   type        = list(string)
 }
 
-variable "private_subnet_cidrs" {
-  description = "List of private subnet CIDRs"
-  type        = list(string)
-}
-
 variable "azs" {
   description = "List of availability zones"
   type        = list(string)
@@ -39,3 +34,14 @@ variable "route53_zone_id" {
   description = "The Route 53 Hosted Zone ID to use for ACM DNS validation"
   type        = string
 } 
+
+variable "private_app_subnet_cidrs" {
+  description = "Private subnets for application tier (ASG)"
+  type        = list(string)
+}
+
+variable "private_db_subnet_cidrs" {
+  description = "Private subnets for RDS and failover"
+  type        = list(string)
+}
+
