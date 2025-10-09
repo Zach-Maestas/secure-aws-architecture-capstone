@@ -28,6 +28,18 @@ module "app" {
   certificate_arn    = module.acm.certificate_arn
 }
 
+# Data Module (RDS)
+
+module "data" {
+  source                = "./modules/data"
+  project               = var.project
+  vpc_id                = module.network.vpc_id
+  private_db_subnet_ids = module.network.private_db_subnet_ids
+  app_sg_id             = module.app.ec2_sg_id
+  db_username           = var.db_username
+  db_password           = var.db_password
+}
+
 # Internet Gateway
 resource "aws_internet_gateway" "this" {
   vpc_id = module.network.vpc_id
