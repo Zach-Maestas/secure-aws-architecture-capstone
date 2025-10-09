@@ -34,3 +34,8 @@ Thumbs.db
 *.zip
 *.tar.gz
 *.rar
+
+# Terraform
+*.tfstate
+*.tfstate.*
+terraform.tfvars
