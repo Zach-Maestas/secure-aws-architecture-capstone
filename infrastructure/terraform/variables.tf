@@ -45,3 +45,16 @@ variable "private_db_subnet_cidrs" {
   type        = list(string)
 }
 
+variable "db_username" { 
+  description = "Username for the RDS instance"
+  type        = string
+  default     = "placeholder" 
+}
+
+variable "db_password" { 
+  description = "Password for the RDS instance"
+  type        = string
+  default     = "placeholder"
+  sensitive   = true 
+}
+

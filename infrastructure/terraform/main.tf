@@ -29,7 +29,6 @@ module "app" {
 }
 
 # Data Module (RDS)
-
 module "data" {
   source                = "./modules/data"
   project               = var.project
