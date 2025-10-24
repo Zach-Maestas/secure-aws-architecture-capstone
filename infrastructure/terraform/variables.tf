@@ -58,3 +58,8 @@ variable "db_password" {
   sensitive   = true 
 }
 
+variable "secret_name" {
+  description = "Name of the existing Secrets Manager secret"
+  type        = string
+}
+
