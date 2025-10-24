@@ -17,3 +17,9 @@ output "target_group_arn" {
   description = "ARN of the target group"
   value = aws_lb_target_group.app.arn
 }
+
+output "ec2_role_arn" {
+  description = "ARN of the EC2 IAM role attached to app instances"
+  value       = aws_iam_role.ssm_role.arn
+}
+

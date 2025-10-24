@@ -27,21 +27,21 @@ resource "aws_security_group" "db" {
 }
 
 resource "aws_db_instance" "this" {
-  identifier             = lower("${var.project}-rds")
-  db_name                = "${var.project}_db"
-  engine                 = "mysql"
-  instance_class         = "db.t3.micro"
-  allocated_storage      = 20
-  max_allocated_storage  = 100
-  storage_type           = "gp3"
-  storage_encrypted      = true
-  username               = var.db_username
-  password               = var.db_password
-  port                   = var.db_port
-  db_subnet_group_name   = aws_db_subnet_group.this.name
-  vpc_security_group_ids = [aws_security_group.db.id]
-  multi_az               = true
-  publicly_accessible    = false
+  identifier              = lower("${var.project}-rds")
+  db_name                 = replace("${var.project}_db", "-", "_")
+  engine                  = "mysql"
+  instance_class          = "db.t3.micro"
+  allocated_storage       = 20
+  max_allocated_storage   = 100
+  storage_type            = "gp3"
+  storage_encrypted       = true
+  username                = var.db_username
+  password                = var.db_password
+  port                    = var.db_port
+  db_subnet_group_name    = aws_db_subnet_group.this.name
+  vpc_security_group_ids  = [aws_security_group.db.id]
+  multi_az                = true
+  publicly_accessible     = false
   backup_retention_period = 7
   deletion_protection     = true
   skip_final_snapshot     = true

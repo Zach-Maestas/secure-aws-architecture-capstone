@@ -14,7 +14,6 @@ module "acm" {
   project        = var.project
   domain_name    = var.domain_name
   hosted_zone_id = var.route53_zone_id    
-
   alb_dns_name = module.app.alb_dns_name
 }
 
@@ -37,6 +36,14 @@ module "data" {
   app_sg_id             = module.app.ec2_sg_id
   db_username           = var.db_username
   db_password           = var.db_password
+}
+
+# Secrets Module
+module "secrets" {
+  source        = "./modules/secrets"
+  secret_name   = var.secret_name
+  ec2_role_arn  = module.app.ec2_role_arn
+  vpc_id        = module.network.vpc_id
 }
 
 # Internet Gateway

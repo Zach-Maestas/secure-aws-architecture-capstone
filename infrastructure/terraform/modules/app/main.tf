@@ -128,7 +128,6 @@ resource "aws_iam_role" "ssm_role" {
   })
 }
 
-
 # Attach the AmazonSSMManagedInstanceCore policy
 resource "aws_iam_role_policy_attachment" "ssm_attach" {
   role       = aws_iam_role.ssm_role.name
