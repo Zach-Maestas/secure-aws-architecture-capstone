@@ -1,10 +1,9 @@
 #!/bin/bash
 set -e
 
-# Update & install deps
+# Update & install base packages
 yum update -y
-yum install -y python3 git
-pip3 install flask psycopg2-binary python-dotenv
+yum install -y python3 git jq
 
 # Pull app repo
 cd /home/ec2-user
@@ -14,7 +13,15 @@ else
     cd app && git pull && cd ..
 fi
 
-# Create systemd service for Flask (no DB env vars yet)
+# Install Python dependencies
+cd /home/ec2-user/app/application
+if [ -f "requirements.txt" ]; then
+    pip3 install -r requirements.txt
+else
+    pip3 install flask psycopg2-binary python-dotenv boto3
+fi
+
+# Create systemd service for Flask
 sudo tee /etc/systemd/system/flask-app.service > /dev/null <<EOL
 [Unit]
 Description=Flask Application
@@ -25,6 +32,7 @@ User=ec2-user
 WorkingDirectory=/home/ec2-user/app/application
 ExecStart=/usr/bin/python3 app.py
 Restart=always
+EnvironmentFile=-/etc/environment
 
 [Install]
 WantedBy=multi-user.target
