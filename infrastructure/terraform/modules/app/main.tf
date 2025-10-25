@@ -139,3 +139,21 @@ resource "aws_iam_instance_profile" "ssm_profile" {
   name = "${var.project}-ec2-ssm-profile"
   role = aws_iam_role.ssm_role.name
 }
+
+# Secrets Manager Access Policy (to allow EC2 to read DB credentials)
+resource "aws_iam_role_policy" "secrets_access" {
+  name = "${var.project}-secrets-access"
+  role = aws_iam_role.ssm_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = ["secretsmanager:GetSecretValue"],
+        Resource = data.aws_secretsmanager_secret.db.arn
+      }
+    ]
+  })
+}
+
