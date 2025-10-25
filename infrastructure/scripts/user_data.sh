@@ -3,7 +3,11 @@ set -e
 
 # Update & install base packages
 yum update -y
-yum install -y python3 git jq
+yum install -y python3 python3-pip git jq
+
+# Ensure pip is working
+python3 -m ensurepip
+python3 -m pip install --upgrade pip
 
 # Pull app repo
 cd /home/ec2-user
@@ -13,12 +17,12 @@ else
     cd app && git pull && cd ..
 fi
 
-# Install Python dependencies
+# Install Python dependencies (globally)
 cd /home/ec2-user/app/application
 if [ -f "requirements.txt" ]; then
-    pip3 install -r requirements.txt
+    /usr/bin/pip3 install -r requirements.txt
 else
-    pip3 install flask psycopg2-binary python-dotenv boto3
+    /usr/bin/pip3 install flask psycopg2-binary python-dotenv boto3
 fi
 
 # Create systemd service for Flask
