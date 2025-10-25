@@ -5,11 +5,11 @@ set -e
 yum update -y
 yum install -y python3 python3-pip git jq
 
-# Ensure pip is working
+# Ensure pip is available globally
 python3 -m ensurepip
 python3 -m pip install --upgrade pip
 
-# Pull app repo
+# Pull the latest app code
 cd /home/ec2-user
 if [ ! -d "app" ]; then
     git clone https://github.com/Zach-Maestas/secure-aws-architecture-capstone.git app
@@ -17,12 +17,12 @@ else
     cd app && git pull && cd ..
 fi
 
-# Install Python dependencies (globally)
+# Install dependencies globally (system-wide)
 cd /home/ec2-user/app/application
 if [ -f "requirements.txt" ]; then
-    /usr/bin/pip3 install -r requirements.txt
+    python3 -m pip install -r requirements.txt --no-cache-dir --break-system-packages
 else
-    /usr/bin/pip3 install flask psycopg2-binary python-dotenv boto3
+    python3 -m pip install flask psycopg2-binary python-dotenv boto3 --no-cache-dir --break-system-packages
 fi
 
 # Create systemd service for Flask
@@ -37,6 +37,7 @@ WorkingDirectory=/home/ec2-user/app/application
 ExecStart=/usr/bin/python3 app.py
 Restart=always
 EnvironmentFile=-/etc/environment
+Environment="PYTHONPATH=/usr/local/lib/python3.7/site-packages:/usr/lib/python3.7/site-packages"
 
 [Install]
 WantedBy=multi-user.target
