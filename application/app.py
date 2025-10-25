@@ -3,9 +3,32 @@ import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
+import boto3
+from botocore.exceptions import ClientError
+import json
 
-# Load .env values
-load_dotenv()
+def load_secret():
+    secret_name = os.environ.get("SECRET_NAME", "capstone/secureaws/db-credentials")
+    region_name = os.environ.get("AWS_REGION", "us-east-1")
+
+    session = boto3.session.Session()
+    client = session.client(service_name='secretsmanager', region_name=region_name)
+
+    try:
+        response = client.get_secret_value(SecretId=secret_name)
+        secret = json.loads(response['SecretString'])
+
+        # Map AWS secret keys to Flask env vars
+        os.environ["DB_USER"] = secret["username"]
+        os.environ["DB_PASSWORD"] = secret["password"]
+        os.environ["DB_HOST"] = secret["host"]
+        os.environ["DB_PORT"] = str(secret["port"])
+        os.environ["DB_NAME"] = secret["dbname"]
+
+    except ClientError as e:
+        print(f"⚠️ Failed to load DB secret: {e}")
+
+load_secret()
 
 # Required environment variables
 required_vars = ["DB_HOST", "DB_NAME", "DB_USER", "DB_PASSWORD"]
@@ -14,23 +37,16 @@ missing = [var for var in required_vars if not os.environ.get(var)]
 if missing:
     print(f"⚠️ Missing DB env vars: {', '.join(missing)}. DB routes may fail.")
 
-# Load env vars
-DB_HOST = os.environ.get("DB_HOST")
-DB_PORT = int(os.environ.get("DB_PORT", "5432"))
-DB_NAME = os.environ.get("DB_NAME")
-DB_USER = os.environ.get("DB_USER")
-DB_PASSWORD = os.environ.get("DB_PASSWORD")
-
 # DB connection helper
 def get_db_connection():
     return psycopg2.connect(
-        host=DB_HOST,
-        port=DB_PORT,
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD,
+        host=os.environ.get("DB_HOST"),
+        port=int(os.environ.get("DB_PORT", "5432")),
+        dbname=os.environ.get("DB_NAME"),
+        user=os.environ.get("DB_USER"),
+        password=os.environ.get("DB_PASSWORD"),
         connect_timeout=5,
-        # sslmode="require"
+        sslmode="require"
     )
 
 app = Flask(__name__)

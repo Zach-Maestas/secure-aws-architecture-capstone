@@ -22,3 +22,8 @@ variable "certificate_arn" {
   description = "The ARN of the ACM certificate to use with the ALB"
   type        = string
 }
+
+variable "secret_name" {
+  description = "Name of the existing Secrets Manager secret"
+  type        = string
+}

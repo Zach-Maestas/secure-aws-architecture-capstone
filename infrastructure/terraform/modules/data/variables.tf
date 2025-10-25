@@ -17,10 +17,10 @@ variable "app_sg_id" {
   description = "Security group ID of the App layer"
 }
 
-variable "db_port" { 
-  description = "Port for the RDS instance"
+variable "db_port" {
+  description = "Port for the database"
   type        = number
-  default = 3306 
+  default     = 5432 # PostgreSQL default port
 }
 
 variable "db_username" {

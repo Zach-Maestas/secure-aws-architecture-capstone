@@ -28,8 +28,8 @@ resource "aws_security_group" "db" {
 
 resource "aws_db_instance" "this" {
   identifier              = lower("${var.project}-rds")
-  db_name                 = replace("${var.project}_db", "-", "_")
-  engine                  = "mysql"
+  db_name                 = replace("${var.project}_postgres", "-", "_")
+  engine                  = "postgres"
   instance_class          = "db.t3.micro"
   allocated_storage       = 20
   max_allocated_storage   = 100

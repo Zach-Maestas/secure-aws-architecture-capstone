@@ -12,5 +12,8 @@ data "aws_ami" "amazon_linux_2" {
   }
 
   owners = ["137112412989"] # Amazon
+}
 
+data "aws_secretsmanager_secret" "db" {
+  name = var.secret_name
 }
