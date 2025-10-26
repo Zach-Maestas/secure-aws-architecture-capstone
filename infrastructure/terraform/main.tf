@@ -35,8 +35,6 @@ module "data" {
   vpc_id                = module.network.vpc_id
   private_db_subnet_ids = module.network.private_db_subnet_ids
   app_sg_id             = module.app.ec2_sg_id
-  db_username           = var.db_username
-  db_password           = var.db_password
 }
 
 # Secrets Module

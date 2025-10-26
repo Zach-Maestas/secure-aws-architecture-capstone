@@ -16,20 +16,3 @@ variable "private_db_subnet_ids" {
 variable "app_sg_id" {
   description = "Security group ID of the App layer"
 }
-
-variable "db_port" {
-  description = "Port for the database"
-  type        = number
-  default     = 5432 # PostgreSQL default port
-}
-
-variable "db_username" {
-  description = "Username for the RDS instance"
-  type        = string
-}
-
-variable "db_password" {
-  description = "Password for the RDS instance"
-  type        = string
-  sensitive   = true
-}

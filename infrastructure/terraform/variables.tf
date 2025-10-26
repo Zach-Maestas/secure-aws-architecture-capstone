@@ -45,17 +45,6 @@ variable "private_db_subnet_cidrs" {
   type        = list(string)
 }
 
-variable "db_username" { 
-  description = "Username for the RDS instance"
-  type        = string
-}
-
-variable "db_password" { 
-  description = "Password for the RDS instance"
-  type        = string
-  sensitive   = true 
-}
-
 variable "secret_name" {
   description = "Name of the existing Secrets Manager secret"
   type        = string
