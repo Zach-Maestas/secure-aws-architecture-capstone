@@ -23,7 +23,7 @@ def load_secret():
         os.environ["DB_PASSWORD"] = secret["password"]
         os.environ["DB_HOST"] = secret["host"]
         os.environ["DB_PORT"] = str(secret["port"])
-        os.environ["DB_NAME"] = secret["dbname"]
+        os.environ["DB_NAME"] = secret["db_name"]
 
     except ClientError as e:
         print(f"⚠️ Failed to load DB secret: {e}")
