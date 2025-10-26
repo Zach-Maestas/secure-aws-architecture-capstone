@@ -10,8 +10,8 @@ resource "aws_security_group" "db" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port       = var.db_port
-    to_port         = var.db_port
+    from_port       = local.db_creds.port
+    to_port         = local.db_creds.port
     protocol        = "tcp"
     security_groups = [var.app_sg_id]
   }
@@ -37,7 +37,7 @@ resource "aws_db_instance" "this" {
   storage_encrypted       = true
   username                = local.db_creds.username
   password                = local.db_creds.password
-  port                    = local.db_creds.db_port
+  port                    = local.db_creds.port
   db_subnet_group_name    = aws_db_subnet_group.this.name
   vpc_security_group_ids  = [aws_security_group.db.id]
   multi_az                = true
