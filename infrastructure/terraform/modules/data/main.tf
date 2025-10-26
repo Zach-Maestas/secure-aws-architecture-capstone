@@ -28,16 +28,16 @@ resource "aws_security_group" "db" {
 
 resource "aws_db_instance" "this" {
   identifier              = lower("${var.project}-rds")
-  db_name                 = replace("${var.project}_postgres", "-", "_")
-  engine                  = "postgres"
+  db_name                 = local.db_creds.db_name
+  engine                  = local.db_creds.engine
   instance_class          = "db.t3.micro"
   allocated_storage       = 20
   max_allocated_storage   = 100
   storage_type            = "gp3"
   storage_encrypted       = true
-  username                = var.db_username
-  password                = var.db_password
-  port                    = var.db_port
+  username                = local.db_creds.username
+  password                = local.db_creds.password
+  port                    = local.db_creds.db_port
   db_subnet_group_name    = aws_db_subnet_group.this.name
   vpc_security_group_ids  = [aws_security_group.db.id]
   multi_az                = true
@@ -47,4 +47,12 @@ resource "aws_db_instance" "this" {
   skip_final_snapshot     = true
 
   tags = { Name = "${var.project}-rds" }
+}
+
+data "aws_secretsmanager_secret_version" "db" {
+  secret_id = "capstone/secureaws/db-credentials"
+}
+
+locals {
+  db_creds = jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)
 }
