@@ -45,6 +45,11 @@ resource "aws_db_instance" "this" {
   backup_retention_period = 7
   deletion_protection     = true
   skip_final_snapshot     = true
+  
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes  = [username, password]
+  }
 
   tags = { Name = "${var.project}-rds" }
 }

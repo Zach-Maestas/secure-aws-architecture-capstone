@@ -1,3 +1,9 @@
+/*
+--------------------------------------------------------------
+Modules for Network, ACM, Application, Data (RDS), and Secrets
+--------------------------------------------------------------
+*/
+
 module "network" {
   source               = "./modules/network"
   project              = var.project
@@ -50,6 +56,12 @@ resource "aws_internet_gateway" "this" {
   vpc_id = module.network.vpc_id
   tags   = { Name = "${var.project}-igw" }
 }
+
+/*
+--------------------------------------------------------------
+Resources for Routing and NAT
+--------------------------------------------------------------
+*/
 
 # Elastic IPs for NAT Gateways
 resource "aws_eip" "nat" {
