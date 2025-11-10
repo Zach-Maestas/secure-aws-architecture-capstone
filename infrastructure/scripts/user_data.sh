@@ -43,6 +43,12 @@ Environment="PYTHONPATH=/usr/local/lib/python3.7/site-packages:/usr/lib/python3.
 WantedBy=multi-user.target
 EOL
 
+# Wait for the application files to be present
+until [ -f /home/ec2-user/app/application/backend/app.py ]; do
+  echo "Waiting for Flask app files to be ready..."
+  sleep 5
+done
+
 # Enable & start the service
 sudo systemctl daemon-reload
 sudo systemctl enable flask-app
