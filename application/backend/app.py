@@ -6,6 +6,10 @@ from dotenv import load_dotenv
 import boto3
 from botocore.exceptions import ClientError
 import json
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
 
 def load_secret():
     secret_name = os.environ.get("SECRET_NAME", "capstone/secureaws/db-credentials")
@@ -51,7 +55,7 @@ def get_db_connection():
 
 app = Flask(__name__)
 
-@app.route("/health", methods=["GET"])
+@app.route("/", methods=["GET"])
 def health():
     return jsonify(status="ok"), 200
 
@@ -68,7 +72,7 @@ def db_health():
     finally:
         conn.close()
 
-@app.route("/items", methods=["GET"])
+@app.route("/db/items", methods=["GET"])
 def list_items():
     conn = get_db_connection()
     try:
@@ -80,7 +84,7 @@ def list_items():
     finally:
         conn.close()
 
-@app.route("/items", methods=["POST"])
+@app.route("/db/items", methods=["POST"])
 def create_item():
     data = request.get_json(silent=True) or {}
     name = (data.get("name") or "").strip()
@@ -102,7 +106,7 @@ def create_item():
     finally:
         conn.close()
 
-@app.route("/items/<int:item_id>", methods=["GET"])
+@app.route("/db/items/<int:item_id>", methods=["GET"])
 def get_item(item_id):
     conn = get_db_connection()
     try:
@@ -117,7 +121,7 @@ def get_item(item_id):
     finally:
         conn.close()
 
-@app.route("/items/<int:item_id>", methods=["DELETE"])
+@app.route("/db/items/<int:item_id>", methods=["DELETE"])
 def delete_item(item_id):
     conn = get_db_connection()
     try:

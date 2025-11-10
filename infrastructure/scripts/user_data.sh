@@ -18,7 +18,7 @@ else
 fi
 
 # Install dependencies globally (system-wide)
-cd /home/ec2-user/app/application
+cd /home/ec2-user/app/application/backend
 if [ -f "requirements.txt" ]; then
     python3 -m pip install -r requirements.txt --no-cache-dir --break-system-packages
 else
