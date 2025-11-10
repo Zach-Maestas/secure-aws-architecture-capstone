@@ -34,7 +34,7 @@ After=network.target
 [Service]
 User=ec2-user
 WorkingDirectory=/home/ec2-user/app/application/backend
-ExecStart=/usr/bin/python3 /home/ec2-user/app/application/backend/app.py
+ExecStart=/usr/bin/python3 app.py
 Restart=always
 EnvironmentFile=-/etc/environment
 Environment="PYTHONPATH=/usr/local/lib/python3.7/site-packages:/usr/lib/python3.7/site-packages"
