@@ -133,5 +133,14 @@ def delete_item(item_id):
     finally:
         conn.close()
 
+
+# Enable CORS for specific frontend origin
+@app.after_request
+def after_request(response):
+    response.headers.add("Access-Control-Allow-Origin", "http://secure-capstone-frontend.s3-website-us-east-1.amazonaws.com")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+    return response
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
