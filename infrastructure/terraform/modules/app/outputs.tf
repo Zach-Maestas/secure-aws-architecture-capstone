@@ -23,3 +23,7 @@ output "ec2_role_arn" {
   value       = aws_iam_role.ssm_role.arn
 }
 
+output "s3_website_endpoint" {
+  description = "Frontend static website URL"
+  value       = aws_s3_bucket.frontend.website_endpoint
+}
