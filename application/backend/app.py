@@ -9,7 +9,7 @@ import json
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/db/*": {"origins": "http://secure-capstone-frontend.s3-website-us-east-1.amazonaws.com"}})
 
 def load_secret():
     secret_name = os.environ.get("SECRET_NAME", "capstone/secureaws/db-credentials")
@@ -52,8 +52,6 @@ def get_db_connection():
         connect_timeout=5,
         sslmode="require"
     )
-
-app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def health():
