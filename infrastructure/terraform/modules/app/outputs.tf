@@ -25,5 +25,5 @@ output "ec2_role_arn" {
 
 output "s3_website_endpoint" {
   description = "Frontend static website URL"
-  value       = aws_s3_bucket.frontend.website_endpoint
+  value       = aws_s3_bucket_website_configuration.frontend.website_endpoint
 }

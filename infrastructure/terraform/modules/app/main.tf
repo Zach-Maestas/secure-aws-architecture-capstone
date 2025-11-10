@@ -156,26 +156,43 @@ resource "aws_iam_role_policy" "secrets_access" {
   })
 }
 
+# S3 Bucket for Frontend Hosting
 resource "aws_s3_bucket" "frontend" {
-  bucket        = "${var.project_name}-frontend"
+  bucket        = "${var.project}-frontend"
   force_destroy = false
 
   lifecycle {
     prevent_destroy = true
   }
 
-  website {
-    index_document = "index.html"
-    error_document = "index.html"
-  }
-
   tags = {
-    Name        = "${var.project_name}-frontend"
-    Environment = var.environment
+    Name = "${var.project}-frontend"
   }
 }
 
-# S3 Bucket Policy to allow public read access
+# Configure the website hosting (index and error docs)
+resource "aws_s3_bucket_website_configuration" "frontend" {
+  bucket = aws_s3_bucket.frontend.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "index.html"
+  }
+}
+
+# Disable Block Public Access settings
+resource "aws_s3_bucket_public_access_block" "frontend" {
+  bucket                  = aws_s3_bucket.frontend.id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+# Allow public reads for the website
 resource "aws_s3_bucket_policy" "frontend_public" {
   bucket = aws_s3_bucket.frontend.id
 
@@ -191,13 +208,7 @@ resource "aws_s3_bucket_policy" "frontend_public" {
       }
     ]
   })
-
-  lifecycle {
-    prevent_destroy = true
-    ignore_changes = [acl, policy]
-  }
 }
-
 
 
 
