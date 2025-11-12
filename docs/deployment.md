@@ -50,7 +50,7 @@ Each module defines a major layer:
 - **app/** – ALB, EC2, Auto Scaling, security groups  
 - **data/** – RDS and Secrets Manager integration  
 - **acm/** – Certificate creation and DNS validation
-- - **secrets/** – Secrets management  
+- **secrets/** – Secrets management  
 
 ---
 
