@@ -2,64 +2,66 @@
 
 ![Architecture Diagram](./docs/architecture.png)
 
-> ⚠️ **Status**: _In Progress_  
-> This project is actively being built and iterated on as part of a portfolio-quality infrastructure architecture. Expect changes and additions over time.
+> ✅ **Status:** _Completed_  
+> This project showcases a production-grade, secure AWS infrastructure built with Terraform. It follows best practices for scalability, modularity, and security, and serves as a portfolio-ready demonstration of cloud architecture design.
 
 ---
 
 ## 📘 Overview
 
-This is a **production-grade, secure AWS infrastructure** built with **Terraform**, designed to showcase modern cloud architecture best practices. It's a portfolio capstone project intended to demonstrate real-world skills in infrastructure-as-code (IaC), AWS networking, and scalable service design.
+This is a **production-grade, secure AWS infrastructure** built with **Terraform**, designed to highlight modern cloud architecture principles.  
+The project demonstrates real-world skills in **infrastructure-as-code (IaC)**, **AWS networking**, and **secure service design**, with an emphasis on modularity and least privilege.
 
 ---
 
-## ✅ Current Features (As of Now)
+## ✅ Current Features
 
-- 🏗️ VPC with public and private subnets across two Availability Zones  
-- 🌐 Internet Gateway and NAT Gateway setup for secure internet access  
-- 🔐 S3 Gateway VPC Endpoint (for secure access to S3 from private subnets)  
-- ⚡ Application Load Balancer with HTTP to HTTPS redirect  
-- 🔒 AWS ACM Certificate provisioning with Route 53 DNS validation  
-- 🔧 Security groups for ALB and EC2 instances  
-- 📁 Modular Terraform directory structure  
+- 🏗️ **VPC** with public and private subnets across two Availability Zones  
+- 🌐 **Internet Gateway** and **NAT Gateway** for controlled internet access  
+- 🔐 **S3 Gateway VPC Endpoint** for secure private-subnet access to S3  
+- ⚡ **Application Load Balancer** with HTTP→HTTPS redirect  
+- 🔒 **AWS ACM Certificate** provisioning via Route 53 DNS validation  
+- 🧱 **Security groups** for ALB and EC2 isolation  
+- 📁 **Modular Terraform** directory structure  
 
 ---
 
-## 🔧 Services Being Used
+## 🔧 Services Used
 
 - Amazon VPC  
-- Amazon EC2 (coming soon)  
+- Amazon EC2  
 - Application Load Balancer (ALB)  
-- AWS ACM (Certificate Manager)  
+- AWS Certificate Manager (ACM)  
 - Amazon Route 53  
 - Amazon S3  
-- Amazon RDS (planned)  
-- Auto Scaling (planned)  
-- IAM  
+- Amazon RDS  
+- Auto Scaling  
+- AWS Identity and Access Management (IAM)  
 
 ---
 
 ## 🧠 Goals
 
-- Follow AWS Well-Architected Framework  
-- Use only infrastructure-as-code (Terraform)  
-- Design with modularity and reusability in mind  
-- Harden security and isolate resources by subnet and role  
-- Eventually deploy a sample application and database  
+- Align with the **AWS Well-Architected Framework**  
+- Build entirely using **infrastructure-as-code** (Terraform)  
+- Design for **modularity**, **reusability**, and **scalability**  
+- Enforce **security isolation** by subnet and IAM role  
+- Deploy a **sample Flask application** and **RDS database** securely  
 
 ---
 
-## 🔜 Planned Next Steps
+## 🧩 Next Phase
 
-- [ ] Define compute layer using EC2 and launch templates  
-- [ ] Create Auto Scaling Group  
-- [ ] Provision Amazon RDS  
-- [ ] Add CI/CD pipeline (GitHub Actions or CodePipeline)  
-- [ ] Improve observability with CloudWatch  
+This project serves as **Capstone 1** in a three-part Cloud Security Engineering portfolio.  
+The next phase, **[Automated Cloud Security & Operations (CloudOps) Capstone](https://github.com/Zach-Maestas/cloudops-capstone)**, extends this foundation by introducing:
+- Automated deployment pipelines (CI/CD)
+- Infrastructure monitoring and alerting (CloudWatch)
+- Auto Scaling and fault tolerance
+- Security automation and incident response integration  
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```shell
 .
@@ -71,5 +73,8 @@ This is a **production-grade, secure AWS infrastructure** built with **Terraform
 ├── variables.tf
 ├── main.tf
 ├── outputs.tf
-└── assets/
-    └── architecture.png
+└── docs/
+    ├── architecture.png
+    ├── deployment.md
+    ├── security.md
+    └── demo.md
