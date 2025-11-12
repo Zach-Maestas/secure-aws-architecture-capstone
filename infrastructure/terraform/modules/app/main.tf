@@ -1,4 +1,4 @@
-# ALB 
+# Application Load Balancer
 resource "aws_lb" "this" {
   name               = "${var.project}-alb"
   internal           = false
