@@ -57,8 +57,8 @@ Each module defines a major layer:
 
 ### 1. Clone the Repository
 Clone the repo and navigate into the infrastructure directory.
-git clone https://github.com/Zach-Maestas/secure-aws-architecture-capstone.git
-cd secure-aws-architecture-capstone/infrastructure
+`git clone https://github.com/Zach-Maestas/secure-aws-architecture-capstone.git`
+`cd secure-aws-architecture-capstone/infrastructure`
 
 ### 2. Initialize Terraform
 Initialize the working directory, install providers, and set up the backend.
