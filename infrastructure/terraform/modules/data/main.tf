@@ -1,9 +1,11 @@
+# DB Subnet Group
 resource "aws_db_subnet_group" "this" {
   name       = "${var.project}-db-subnet-group"
   subnet_ids = var.private_db_subnet_ids
   tags = { Name = "${var.project}-db-subnet-group" }
 }
 
+# Database Security Group
 resource "aws_security_group" "db" {
   name        = "${var.project}-db-sg"
   description = "Allow DB access from App Layer"
@@ -26,6 +28,7 @@ resource "aws_security_group" "db" {
   tags = { Name = "${var.project}-db-sg" }
 }
 
+# RDS Instance
 resource "aws_db_instance" "this" {
   identifier              = lower("${var.project}-rds")
   db_name                 = local.db_creds.db_name
@@ -54,10 +57,12 @@ resource "aws_db_instance" "this" {
   tags = { Name = "${var.project}-rds" }
 }
 
+# Retrieve DB credentials from Secrets Manager
 data "aws_secretsmanager_secret_version" "db" {
   secret_id = "capstone/secureaws/db-credentials"
 }
 
+# Decode the secret string
 locals {
   db_creds = jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)
 }

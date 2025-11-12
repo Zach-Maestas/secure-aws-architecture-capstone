@@ -1,3 +1,4 @@
+# Application Load Balancer Security Group
 resource "aws_security_group" "alb" {
   name        = "${var.project}-alb-sg"
   description = "Allow public HTTP and HTTPS traffic"
