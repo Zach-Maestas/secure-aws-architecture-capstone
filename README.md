@@ -65,16 +65,37 @@ The next phase, **[Automated Cloud Security & Operations (CloudOps) Capstone](ht
 
 ```shell
 .
-├── modules/
-│   ├── app/
-│   ├── network/
-│   └── acm/
-├── terraform.tfvars
-├── variables.tf
-├── main.tf
-├── outputs.tf
+├── application/
+│   ├── backend/
+│   │   ├── app.py
+│   │   └── requirements.txt
+│   └── frontend/
+│       ├── index.html
+│       ├── styles.css
+│       └── app.js
+│
+├── infrastructure/
+│   ├── scripts/
+│   │   └── user_data.sh
+│   └── terraform/
+│       ├── main.tf
+│       ├── backend.tf
+│       ├── outputs.tf
+│       ├── providers.tf
+│       ├── terraform.tfvars
+│       ├── variables.tf
+│       ├── versions.tf
+│       ├── .terraform.lock.hcl
+│       └── modules/
+│           ├── network/
+│           ├── app/
+│           ├── data/
+│           ├── secrets/
+│           └── acm/
+│
 └── docs/
     ├── architecture.png
     ├── deployment.md
     ├── security.md
     └── demo.md
+```
