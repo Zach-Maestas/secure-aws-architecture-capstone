@@ -88,10 +88,29 @@ The next phase, **[Automated Cloud Security & Operations (CloudOps) Capstone](ht
 │       ├── .terraform.lock.hcl
 │       └── modules/
 │           ├── network/
+│           │   ├── main.tf
+│           │   ├── variables.tf
+│           │   └── outputs.tf
 │           ├── app/
+│           │   ├── data.tf
+│           │   ├── main.tf
+│           │   ├── variables.tf
+│           │   ├── security_groups.tf
+│           │   └── outputs.tf
 │           ├── data/
+│           │   ├── main.tf
+│           │   ├── variables.tf
+│           │   └── outputs.tf
 │           ├── secrets/
+│           │   ├── main.tf
+│           │   ├── variables.tf
+│           │   └── outputs.tf
 │           └── acm/
+│               ├── data.tf
+│               ├── main.tf
+│               ├── variables.tf
+│               ├── security_groups.tf
+│               └── outputs.tf
 │
 └── docs/
     ├── architecture.png
