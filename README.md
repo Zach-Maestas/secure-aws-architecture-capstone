@@ -53,7 +53,7 @@ The project demonstrates real-world skills in **infrastructure-as-code (IaC)**, 
 ## 🧩 Next Phase
 
 This project serves as **Capstone 1** in a three-part Cloud Security Engineering portfolio.  
-The next phase, **[Automated Cloud Security & Operations (CloudOps) Capstone](https://github.com/Zach-Maestas/cloudops-capstone)** (TBD), extends this foundation by introducing:
+The next phase, **[Automated Cloud Security & Operations (CloudOps) Capstone](https://github.com/Zach-Maestas/cloudops-capstone)** (_TBD_), extends this foundation by introducing:
 - Automated deployment pipelines (CI/CD)
 - Infrastructure monitoring and alerting (CloudWatch)
 - Auto Scaling and fault tolerance
