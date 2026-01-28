@@ -71,10 +71,6 @@ Each layer has its own security group:
 - **App SG:** Allows inbound from ALB SG only, outbound to DB SG.  
 - **DB SG:** Allows inbound from app SG only, no public access.
 
-### Network ACLs
-- NACLs provide a second layer of subnet-level protection.  
-- Default deny-all inbound for non-explicit traffic.  
-- Outbound rules scoped to required CIDR ranges only.
 
 ### Lifecycle Protections
 Critical resources (e.g., RDS, S3) include:
