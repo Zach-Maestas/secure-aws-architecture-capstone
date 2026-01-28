@@ -52,12 +52,21 @@ The project demonstrates real-world skills in **infrastructure-as-code (IaC)**, 
 
 ## 🧩 Next Phase
 
-This project serves as **Capstone 1** in a three-part Cloud Security Engineering portfolio.  
-The next phase, **[Automated Cloud Security & Operations (CloudOps) Capstone](https://github.com/Zach-Maestas/cloudops-capstone)** (_TBD_), extends this foundation by introducing:
-- Automated deployment pipelines (CI/CD)
-- Infrastructure monitoring and alerting (CloudWatch)
-- Auto Scaling and fault tolerance
-- Security automation and incident response integration  
+This project is **Part 1**, the foundational secure AWS architecture baseline.  
+The next phase, **[Automated Cloud Security & Operations (CloudOps) Capstone](https://github.com/Zach-Maestas/aws-devsecops-security-ops)**, builds on the same system and adds:
+
+- **ECS Fargate deployment** replacing EC2 Auto Scaling, with task definitions, services, and ALB target groups using `ip` targets.
+- **Secure CI/CD with GitHub Actions + OIDC**, including automated container build and push to ECR, and infrastructure deploy steps.
+- **Secrets management upgrade**, moving DB credential retrieval out of application code and into **ECS task secrets injection** with least privilege IAM execution roles.
+- **Security gates in CI**, including secret scanning and IaC scanning (and container scanning/SBOM as applicable).
+- **Operations and security telemetry**, with CloudWatch logging and metrics, plus baseline detection (GuardDuty, Security Hub) and alert routing.
+- **Incident response workflow**, with a small runbook and at least one automated response action wired to a detection.
+
+## ❌ Known Limitations
+
+- **Secrets retrieval pattern (v1)**: the Flask app retrieves DB secrets via boto3 at startup and mutates environment variables. In Part 2 this is replaced by **task-level secrets injection** and tighter IAM.
+- **Terraform secret handling (v1)**: credentials are referenced via a Secrets Manager data source. In Part 2 secrets are **generated and managed by Terraform**, then consumed by ECS at runtime.
+- **Frontend delivery (v1)**: static hosting is via S3 website endpoint without CloudFront. In Part 2 the frontend is served through **CloudFront with TLS** and restricted bucket access.
 
 ---
 
