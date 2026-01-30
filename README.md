@@ -66,7 +66,7 @@ The next phase, **[Automated Cloud Security Operations & DevSecOps Capstone](htt
 
 - **Secrets retrieval pattern (v1)**: the Flask app retrieves DB secrets via boto3 at startup and mutates environment variables. In Part 2 this is replaced by **task-level secrets injection** and tighter IAM.
 - **Terraform secret handling (v1)**: credentials are referenced via a Secrets Manager data source. In Part 2 secrets are **generated and managed by Terraform**, then consumed by ECS at runtime.
-- **Frontend delivery (v1)**: static hosting is via S3 website endpoint without CloudFront. In Part 2 the frontend is served through **CloudFront with TLS** and restricted bucket access.
+- **Frontend delivery (v1)**: static hosting is via S3 website endpoint without CloudFront. There were issues getting CORS working properly, and securely. In Part 2 the frontend is served through **CloudFront with TLS** and restricted bucket access.
 
 ---
 
