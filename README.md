@@ -53,7 +53,7 @@ The project demonstrates real-world skills in **infrastructure-as-code (IaC)**, 
 ## 🧩 Next Phase
 
 This project is **Part 1**, the foundational secure AWS architecture baseline.  
-The next phase, **[Automated Cloud Security Operations & DevSecOps Capstone](https://github.com/Zach-Maestas/aws-secops-pipeline)**, builds on the same system and adds:
+The next phase, **[Automated Cloud Security Operations & DevSecOps Capstone](https://github.com/Zach-Maestas/aws-security-ops-pipeline)**, builds on the same system and adds:
 
 - **ECS Fargate deployment** replacing EC2 Auto Scaling, with task definitions, services, and ALB target groups using `ip` targets.
 - **Secure CI/CD with GitHub Actions + OIDC**, including automated container build and push to ECR, and infrastructure deploy steps.
