@@ -58,7 +58,7 @@ The network follows a **three-tier architecture**:
 
 ### Secrets Management
 - Database credentials and other sensitive values are stored in **AWS Secrets Manager**.  
-- Secrets are referenced dynamically in Terraform rather than hardcoded in variables.  
+- Secrets are referenced dynamically (never hardcoded).
 - Application instances use IAM roles to retrieve secrets securely at runtime.
 
 ---
@@ -87,5 +87,4 @@ This architecture prioritizes:
 - Layered defense through subnet isolation and strict routing.
 - Identity-based access using IAM roles instead of static credentials.
 - Encrypted storage and communication at all times.
-- Logging and monitoring for continuous visibility and incident response.
 These controls collectively deliver a secure, resilient, and auditable AWS environment suitable for production-grade workloads.
