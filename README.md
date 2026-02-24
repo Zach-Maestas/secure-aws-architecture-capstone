@@ -9,7 +9,7 @@
 
 ## 📘 Overview
 
-This is a **production-grade, secure AWS infrastructure** built with **Terraform**, designed to highlight modern cloud architecture principles.  
+This is a **fully reproducible, secure AWS infrastructure** built with **Terraform**, designed to highlight modern cloud architecture principles.  
 The project demonstrates real-world skills in **infrastructure-as-code (IaC)**, **AWS networking**, and **secure service design**, with an emphasis on modularity and least privilege.
 
 ---
@@ -21,7 +21,7 @@ The project demonstrates real-world skills in **infrastructure-as-code (IaC)**, 
 - 🔐 **S3 Gateway VPC Endpoint** for secure private-subnet access to S3  
 - ⚡ **Application Load Balancer** with HTTP→HTTPS redirect  
 - 🔒 **AWS ACM Certificate** provisioning via Route 53 DNS validation  
-- 🧱 **Security groups** for ALB and EC2 isolation  
+- 🧱 **Security Groups** for ALB and EC2 isolation  
 - 📁 **Modular Terraform** directory structure  
 
 ---
